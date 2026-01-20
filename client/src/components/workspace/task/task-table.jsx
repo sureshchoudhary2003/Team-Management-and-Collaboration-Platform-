@@ -147,17 +147,6 @@ const DataTableFilterToolbar = ({
 
   return (
     <div className="flex flex-col lg:flex-row w-full items-start space-y-2 mb-2 lg:mb-0 lg:space-x-2 lg:space-y-0">
-      <Input
-        placeholder="Filter tasks..."
-        value={filters.keyword || ""}
-        onChange={(e) =>
-          setFilters({
-            ...filters,
-            keyword: e.target.value,
-          })
-        }
-        className="h-8 w-full lg:w-[250px]"
-      />
       {/* Status filter */}
       <DataTableFacetedFilter
         title="Status"
@@ -200,7 +189,7 @@ const DataTableFilterToolbar = ({
       )}
 
       {/* Clear filters button */}
-      {(filters.keyword || filters.status || filters.priority || filters.assigneeId || filters.projectId) && (
+      {(filters.status || filters.priority || filters.assigneeId || filters.projectId) && (
         <Button
           variant="ghost"
           onClick={() => setFilters({})}

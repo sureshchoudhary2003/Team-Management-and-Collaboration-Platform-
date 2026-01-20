@@ -51,7 +51,7 @@ export function DataTableFacetedFilter({
   };
 
   return (
-    <Popover modal open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           disabled={disabled}
@@ -87,48 +87,43 @@ export function DataTableFacetedFilter({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0" align="start">
-        <Command>
-          <CommandInput placeholder={`Filter ${title}`} />
-          <CommandList>
-            <CommandEmpty>No results found.</CommandEmpty>
-            <CommandGroup>
-              {options.map((option) => {
-                const isSelected = selectedValueSet.has(option.value);
-                const Icon = option.icon;
-                return (
-                  <CommandItem
-                    key={option.value}
-                    onSelect={() => toggleValue(option.value)}
-                    className="cursor-pointer"
-                  >
-                    {multiSelect && (
-                      <div
-                        className={cn(
-                          "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                          isSelected ? "bg-primary text-primary-foreground" : "opacity-50 [&_svg]:invisible"
-                        )}
-                      >
-                        <Check className="h-4 w-4" />
-                      </div>
+        <div className="p-2 space-y-1">
+          {options.map((option) => {
+            const isSelected = selectedValueSet.has(option.value);
+            const Icon = option.icon;
+            return (
+              <div
+                key={option.value}
+                onClick={() => toggleValue(option.value)}
+                className="flex items-center px-2 py-1.5 cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-sm"
+              >
+                {multiSelect && (
+                  <div
+                    className={cn(
+                      "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                      isSelected ? "bg-primary text-primary-foreground" : "opacity-50 [&_svg]:invisible"
                     )}
-                    {Icon && <Icon className="mr-2 h-4 w-4 text-muted-foreground" />}
-                    <span>{option.label}</span>
-                  </CommandItem>
-                );
-              })}
-            </CommandGroup>
-            {selectedValueSet.size > 0 && (
-              <>
-                <CommandSeparator />
-                <CommandGroup className="sticky bottom-0 bg-white">
-                  <CommandItem onSelect={() => onFilterChange([])} className="justify-center text-center">
-                    Clear filters
-                  </CommandItem>
-                </CommandGroup>
-              </>
-            )}
-          </CommandList>
-        </Command>
+                  >
+                    <Check className="h-4 w-4" />
+                  </div>
+                )}
+                {Icon && <Icon className="mr-2 h-4 w-4 text-muted-foreground" />}
+                <span className="text-sm">{option.label}</span>
+              </div>
+            );
+          })}
+          {selectedValueSet.size > 0 && (
+            <>
+              <div className="h-px bg-border my-1" />
+              <div
+                onClick={() => onFilterChange([])}
+                className="flex items-center justify-center px-2 py-1.5 cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-sm text-sm"
+              >
+                Clear filters
+              </div>
+            </>
+          )}
+        </div>
       </PopoverContent>
     </Popover>
   );
