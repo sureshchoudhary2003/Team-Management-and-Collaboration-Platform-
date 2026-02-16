@@ -112,6 +112,7 @@ const SidebarProvider = React.forwardRef(
               className
             )}
             ref={ref}
+            data-state={state}
             {...props}
           >
             {children}
@@ -167,26 +168,32 @@ const Sidebar = React.forwardRef(
     }
 
     return (
-      <div data-sidebar="sidebar-wrapper" className="relative h-full">
+      <div 
+        ref={ref}
+        data-sidebar="sidebar"
+        data-state={state}
+        data-collapsible={state === "collapsed" ? collapsible : undefined}
+        data-variant={variant}
+        data-side={side}
+        className={cn(
+          "group/sidebar-collapsible duration-200 fixed inset-y-0 z-10 hidden h-svh w-[--sidebar-width] transition-[left,right,width] ease-linear md:flex",
+          side === "left"
+            ? "left-0 data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
+            : "right-0 data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
+          variant === "floating" || variant === "inset"
+            ? "p-2 data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)_+_theme(spacing.4)_+2px)]"
+            : "data-[collapsible=icon]:w-[--sidebar-width-icon] data-[side=left]:border-r data-[side=right]:border-l",
+          className
+        )}
+        {...props}
+      >
         <div
-          className={cn(
-            "duration-200 fixed inset-y-0 z-10 hidden h-svh w-[--sidebar-width] transition-[left,right,width] ease-linear md:flex",
-            side === "left"
-              ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
-              : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
-            variant === "floating" || variant === "inset"
-              ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)_+_theme(spacing.4)_+2px)]"
-              : "group-data-[collapsible=icon]:w-[--sidebar-width-icon] group-data-[side=left]:border-r group-data-[side=right]:border-l",
-            className
-          )}
-          {...props}
+          data-sidebar="sidebar-content"
+          data-state={state}
+          data-collapsible={state === "collapsed" ? collapsible : undefined}
+          className="group flex h-full w-full flex-col bg-sidebar data-[variant=floating]:rounded-lg data-[variant=floating]:border data-[variant=floating]:border-sidebar-border data-[variant=floating]:shadow"
         >
-          <div
-            data-sidebar="sidebar"
-            className="flex h-full w-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow"
-          >
-            {children}
-          </div>
+          {children}
         </div>
       </div>
     );
@@ -253,8 +260,12 @@ const SidebarInset = React.forwardRef(
       <main
         ref={ref}
         className={cn(
-          "relative flex min-h-svh flex-1 flex-col bg-background md:ml-[var(--sidebar-width)]",
-          "peer-data-[variant=inset]:min-h-[calc(100svh-theme(spacing.4))] md:peer-data-[variant=inset]:m-2 md:peer-data-[state=collapsed]:peer-data-[variant=inset]:ml-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow",
+          "relative flex min-h-svh flex-1 flex-col bg-background transition-[margin] duration-200 ease-linear",
+          "peer-data-[state=expanded]:md:ml-[var(--sidebar-width)] peer-data-[state=collapsed]:md:ml-[calc(var(--sidebar-width-icon)+theme(spacing.4)+2px)]",
+          "peer-data-[variant=inset]:min-h-[calc(100svh-theme(spacing.4))]",
+          "peer-data-[variant=inset]:peer-data-[state=expanded]:md:m-2 peer-data-[variant=inset]:peer-data-[state=expanded]:md:ml-[calc(var(--sidebar-width)+theme(spacing.2))]",
+          "peer-data-[variant=inset]:peer-data-[state=collapsed]:md:m-2 peer-data-[variant=inset]:peer-data-[state=collapsed]:md:ml-[calc(var(--sidebar-width-icon)+theme(spacing.4)+10px)]",
+          "peer-data-[variant=inset]:md:rounded-xl peer-data-[variant=inset]:md:shadow",
           className
         )}
         {...props}
@@ -330,7 +341,7 @@ const SidebarContent = React.forwardRef(
         ref={ref}
         data-sidebar="content"
         className={cn(
-          "flex min-h-0 flex-1 flex-col gap-2 overflow-auto group-data-[collapsible=icon]:overflow-hidden",
+          "flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto overflow-x-hidden",
           className
         )}
         {...props}

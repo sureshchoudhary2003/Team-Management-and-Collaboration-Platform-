@@ -36,8 +36,10 @@ API.interceptors.response.use(
     if (error.response) {
       const { data, status } = error.response;
 
-      // Don't handle 401 for auth endpoints (login, register, refresh)
-      const isAuthEndpoint = originalRequest.url?.includes('/auth/');
+      // Don't handle 401 for login, register, or refresh-token endpoints
+      const isAuthEndpoint = originalRequest.url?.includes('/auth/login') || 
+                             originalRequest.url?.includes('/auth/register') ||
+                             originalRequest.url?.includes('/auth/refresh-token');
       
       // Handle 401 Unauthorized - try to refresh token (but not for auth endpoints)
       if (status === 401 && !originalRequest._retry && !isAuthEndpoint) {
@@ -58,8 +60,9 @@ API.interceptors.response.use(
           originalRequest.headers.Authorization = `Bearer ${accessToken}`;
           return API(originalRequest);
         } catch (refreshError) {
-          // Refresh failed, clear token and let the app handle redirect
+          // Refresh failed, clear token and redirect to login
           localStorage.removeItem("accessToken");
+          window.location.href = '/';
           return Promise.reject(refreshError);
         }
       }
