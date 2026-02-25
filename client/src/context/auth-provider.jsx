@@ -31,12 +31,13 @@ export const AuthProvider = ({ children }) => {
   const workspace = workspaceData?.workspace;
 
   useEffect(() => {
-    if (workspaceError) {
+    // Only redirect if user is loaded and workspace error exists
+    if (workspaceError && user && workspaceId) {
       if (workspaceError?.errorCode === "ACCESS_UNAUTHORIZED") {
         navigate("/"); // Redirect if the user is not a member of the workspace
       }
     }
-  }, [navigate, workspaceError]);
+  }, [navigate, workspaceError, user, workspaceId]);
 
   const permissions = usePermissions(user, workspace);
 

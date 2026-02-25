@@ -5,8 +5,14 @@ const useGetWorkspaceQuery = (workspaceId) => {
   const query = useQuery({
     queryKey: ["workspace", workspaceId],
     queryFn: () => getWorkspaceByIdQueryFn(workspaceId),
-    staleTime: 0,
-    retry: 2,
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+    retry: (failureCount, error) => {
+      // Don't retry on authorization errors
+      if (error?.errorCode === "ACCESS_UNAUTHORIZED") {
+        return false;
+      }
+      return failureCount < 2;
+    },
     enabled: !!workspaceId,
   });
 
