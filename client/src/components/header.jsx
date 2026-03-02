@@ -52,7 +52,9 @@ export default function Header() {
   };
 
   const handleHomeClick = ()=>{
-    navigate("/")
+    if(workspaceId){
+      navigate(`/workspace/${workspaceId}`)
+    }
   }
 
   return (
